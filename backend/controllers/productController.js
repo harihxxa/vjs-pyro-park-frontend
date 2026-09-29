@@ -39,7 +39,7 @@ exports.list = async (req, res) => {
         }
 
         sql += `
-            ORDER BY p.id DESC
+            ORDER BY p.id ASC
         `;
 
         console.log("PRODUCT QUERY:", sql);

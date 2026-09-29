@@ -1273,9 +1273,13 @@ function renderProducts(products){
     }
 
 
-    box.innerHTML =
-        products.map(
-            product => {
+    const sortedProducts = [...products].sort(
+    (a, b) => Number(a.id) - Number(b.id)
+);
+
+box.innerHTML =
+    sortedProducts.map(
+        product => {
 
                 const soldOut =
                     Boolean(
