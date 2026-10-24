@@ -46,5 +46,11 @@ router.patch(
     controller.updateStatus
 );
 
+// ADMIN - DELETE ORDER
+router.delete(
+    "/:id",
+    auth,
+    controller.deleteOrder
+);
 
 module.exports = router;

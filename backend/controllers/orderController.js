@@ -791,3 +791,71 @@ exports.updateStatus = async (
     }
 
 };
+
+/* =========================================================
+   DELETE ORDER
+   ========================================================= */
+
+exports.deleteOrder = async (req, res) => {
+    const client = await db.connect();
+
+    try {
+        const orderId = Number(req.params.id);
+
+        if (!Number.isInteger(orderId) || orderId <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid order ID"
+            });
+        }
+
+        await client.query("BEGIN");
+
+        // Check whether this order exists
+        const orderResult = await client.query(
+            "SELECT id FROM orders WHERE id = $1",
+            [orderId]
+        );
+
+        if (orderResult.rows.length === 0) {
+            await client.query("ROLLBACK");
+
+            return res.status(404).json({
+                success: false,
+                message: "Order not found"
+            });
+        }
+
+        // Delete items belonging to this order only
+        await client.query(
+            "DELETE FROM order_items WHERE order_id = $1",
+            [orderId]
+        );
+
+        // Delete the selected order only
+        await client.query(
+            "DELETE FROM orders WHERE id = $1",
+            [orderId]
+        );
+
+        await client.query("COMMIT");
+
+        return res.json({
+            success: true,
+            message: "Order deleted successfully"
+        });
+
+    } catch (error) {
+        await client.query("ROLLBACK");
+
+        console.error("ORDER DELETE ERROR:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to delete order"
+        });
+
+    } finally {
+        client.release();
+    }
+};

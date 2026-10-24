@@ -342,6 +342,10 @@ tr:hover{
     color:#fff;
 }
 
+.deleteBtn{
+    background:#b3261e;
+    color:#fff;
+}
 
 .deliveredText{
     color:#4cff7b;
@@ -1041,6 +1045,14 @@ function renderOrders(){
             `;
         }
 
+        action += `
+    <button
+        class="actionBtn deleteBtn"
+        onclick="deleteOrder(${Number(order.id)})"
+    >
+        Delete
+    </button>
+`;
 
         row.innerHTML = `
 
